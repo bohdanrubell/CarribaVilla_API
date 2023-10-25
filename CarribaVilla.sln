@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.8.34212.112
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CarribaVilla_ASP_API", "CarribaVilla_ASP_API\CarribaVilla_ASP_API.csproj", "{AF26B69B-4183-4444-8B30-C67DF0C14A01}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{AF26B69B-4183-4444-8B30-C67DF0C14A01}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AF26B69B-4183-4444-8B30-C67DF0C14A01}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AF26B69B-4183-4444-8B30-C67DF0C14A01}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AF26B69B-4183-4444-8B30-C67DF0C14A01}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {34BE2233-7BDF-484D-8965-A2A42936C7C1}
+	EndGlobalSection
+EndGlobal
