@@ -1,4 +1,5 @@
 ﻿using CarribaVilla_ASP_API.Data;
+
 using CarribaVilla_ASP_API.Models;
 using CarribaVilla_ASP_API.Models.Dto;
 using Microsoft.AspNetCore.JsonPatch;
@@ -10,10 +11,12 @@ namespace CarribaVilla_ASP_API.Controllers
     [ApiController]
     public class VillaAPIController: ControllerBase
     {
+       
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public ActionResult<IEnumerable<VillaDTO>> GetVillas()
         {
+            
             return Ok(VillaStore.villaList);
         }
 
@@ -25,6 +28,7 @@ namespace CarribaVilla_ASP_API.Controllers
         {
             if(id == 0)
             {
+               
                 return BadRequest();
             }
             var villa = VillaStore.villaList.FirstOrDefault(i => i.Id == id);
