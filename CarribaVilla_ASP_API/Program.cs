@@ -2,6 +2,8 @@
 
 using CarribaVilla_ASP_API;
 using CarribaVilla_ASP_API.Data;
+using CarribaVilla_ASP_API.Repository;
+using CarribaVilla_ASP_API.Repository.IRepository;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -12,6 +14,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(option =>
 {
     option.UseSqlServer(builder.Configuration.GetConnectionString("DefaultSQLConnection"));
 });
+builder.Services.AddScoped<IVillaRepository,VillaRepository>();
 builder.Services.AddAutoMapper(typeof(MappingConfig)); 
 builder.Services.AddControllers().AddNewtonsoftJson();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
