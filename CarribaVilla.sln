@@ -3,7 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.8.34212.112
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CarribaVilla_ASP_API", "CarribaVilla_ASP_API\CarribaVilla_ASP_API.csproj", "{AF26B69B-4183-4444-8B30-C67DF0C14A01}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CarribaVilla_ASP_API", "CarribaVilla_ASP_API\CarribaVilla_ASP_API.csproj", "{AF26B69B-4183-4444-8B30-C67DF0C14A01}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CarribaVilla_Web", "CarribaVilla_Web\CarribaVilla_Web.csproj", "{5364A10E-81A5-4E51-B8D0-24974AB5C070}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CarribaVilla_Utility", "CarribaVilla_Utility\CarribaVilla_Utility.csproj", "{DC64A797-F508-4E9B-B06D-A22842C97043}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +19,14 @@ Global
 		{AF26B69B-4183-4444-8B30-C67DF0C14A01}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AF26B69B-4183-4444-8B30-C67DF0C14A01}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AF26B69B-4183-4444-8B30-C67DF0C14A01}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5364A10E-81A5-4E51-B8D0-24974AB5C070}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5364A10E-81A5-4E51-B8D0-24974AB5C070}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5364A10E-81A5-4E51-B8D0-24974AB5C070}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5364A10E-81A5-4E51-B8D0-24974AB5C070}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DC64A797-F508-4E9B-B06D-A22842C97043}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DC64A797-F508-4E9B-B06D-A22842C97043}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DC64A797-F508-4E9B-B06D-A22842C97043}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DC64A797-F508-4E9B-B06D-A22842C97043}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
