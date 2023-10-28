@@ -5,6 +5,7 @@ using CarribaVilla_ASP_API.Repository.IRepository;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 using Microsoft.AspNetCore.JsonPatch;
+using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace CarribaVilla_ASP_API.Controllers
 {
@@ -14,13 +15,15 @@ namespace CarribaVilla_ASP_API.Controllers
     {
         protected APIResponse _response;
         private readonly IVillaNumberRepository _dbVillaNumber;
+        private readonly IVillaRepository _dbVilla;
         private readonly IMapper _mapper;
 
-        public VillaNumberAPIController(IVillaNumberRepository dbVillaNumber, IMapper mapper)
+        public VillaNumberAPIController(IVillaNumberRepository dbVillaNumber, IMapper mapper, IVillaRepository dbVilla)
         {
             _dbVillaNumber = dbVillaNumber;
             _mapper = mapper;
             this._response = new();
+            _dbVilla = dbVilla;
         }
 
 
@@ -89,6 +92,10 @@ namespace CarribaVilla_ASP_API.Controllers
                     ModelState.AddModelError("CustomError", "VillaNumber already exists!");
                     return BadRequest(ModelState);
                 }
+                if(await _dbVilla.GetAsync(u => u.Id == createDTO.VillaID) == null) {
+                    ModelState.AddModelError("CustomError", "VillaID is invalid!");
+                    return BadRequest(ModelState);
+                }
 
                 if (createDTO == null)
                 {
@@ -152,7 +159,11 @@ namespace CarribaVilla_ASP_API.Controllers
                 {
                     return BadRequest();
                 }
-
+                if (await _dbVilla.GetAsync(u => u.Id == updateDTO.VillaID) == null)
+                {
+                    ModelState.AddModelError("CustomError", "VillaID is invalid!");
+                    return BadRequest(ModelState);
+                }
                 VillaNumber model = _mapper.Map<VillaNumber>(updateDTO);
                 await _dbVillaNumber.UpdateAsync(model);
                 _response.StatusCode = HttpStatusCode.NoContent;
