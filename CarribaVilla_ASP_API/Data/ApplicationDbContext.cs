@@ -11,6 +11,7 @@ namespace CarribaVilla_ASP_API.Data
         }
 
         public DbSet<Villa> Villas { get; set; }
+        public DbSet<VillaNumber> VillaNumbers { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -75,6 +76,14 @@ namespace CarribaVilla_ASP_API.Data
                   Amenity = "",
                   CreatedDate = DateTime.Now
               });
+            modelBuilder.Entity<VillaNumber>().HasData(
+                new VillaNumber
+                {
+                    VillaNo = 101,
+                    SpecialDetails = "New Room",
+                    CreatedDate = DateTime.Now
+                }
+                );
         }
     }
 }
