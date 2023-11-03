@@ -60,7 +60,7 @@ namespace CarribaVilla_ASP_API.Controllers
                     _response.StatusCode = HttpStatusCode.BadRequest;
                     return BadRequest(_response);
                 }
-                var villaNumber = await _dbVillaNumber.GetAsync(i => i.VillaNo == id);
+                var villaNumber = await _dbVillaNumber.GetAsync(i => i.VillaNo == id, includeProperties:"Villa");
                 if (villaNumber == null)
                 {
                     _response.StatusCode = HttpStatusCode.NotFound;
@@ -89,11 +89,11 @@ namespace CarribaVilla_ASP_API.Controllers
             {
                 if (await _dbVillaNumber.GetAsync(u => u.VillaNo == createDTO.VillaNo) != null)
                 {
-                    ModelState.AddModelError("CustomError", "VillaNumber already exists!");
+                    ModelState.AddModelError("ErrorMessages", "Villa Number already Exists!");
                     return BadRequest(ModelState);
                 }
                 if(await _dbVilla.GetAsync(u => u.Id == createDTO.VillaID) == null) {
-                    ModelState.AddModelError("CustomError", "VillaID is invalid!");
+                    ModelState.AddModelError("ErrorMessages", "Villa ID is Invalid!");
                     return BadRequest(ModelState);
                 }
 

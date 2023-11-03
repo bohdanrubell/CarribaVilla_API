@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using CarribaVilla_Web.Models.Dto;
+using CarribaVilla_Web.Models.ViewModel;
 
 namespace CarribaVilla_Web
 {
@@ -12,6 +13,9 @@ namespace CarribaVilla_Web
 
             CreateMap<VillaNumberDTO, VillaNumberCreateDTO>().ReverseMap();
             CreateMap<VillaNumberDTO, VillaNumberUpdateDTO>().ReverseMap();
+
+            CreateMap<VillaUpdateViewModel, VillaNumberUpdateDTO>();
+            CreateMap<VillaNumberCreateVM, VillaNumberCreateDTO>();
         }
     }
 }
