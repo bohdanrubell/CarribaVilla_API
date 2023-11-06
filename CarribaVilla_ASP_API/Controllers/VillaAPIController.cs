@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using CarribaVilla_ASP_API.Data;
-
 using CarribaVilla_ASP_API.Models;
 using CarribaVilla_ASP_API.Models.Dto;
 using CarribaVilla_ASP_API.Repository.IRepository;
@@ -30,7 +29,6 @@ namespace CarribaVilla_ASP_API.Controllers
 
 
         [HttpGet]
-        [Authorize]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<APIResponse>> GetVillas()
         {
@@ -49,8 +47,6 @@ namespace CarribaVilla_ASP_API.Controllers
             }
             return _response;
         }
-
-        [Authorize(Roles = "admin")]
         [HttpGet("{id:int}", Name = "GetVilla")]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -86,7 +82,7 @@ namespace CarribaVilla_ASP_API.Controllers
         }
 
         [HttpPost]
-        
+        [Authorize(Roles = "admin")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -99,27 +95,11 @@ namespace CarribaVilla_ASP_API.Controllers
                     ModelState.AddModelError("ErrorMessages", "Villa already Exists!");
                     return BadRequest(ModelState);
                 }
-
                 if (createDTO == null)
                 {
                     return BadRequest(createDTO);
                 }
-
-                //if(villaDTO.Id > 0) 
-                //{
-                //    return StatusCode(StatusCodes.Status500InternalServerError);
-                //}
                 Villa model = _mapper.Map<Villa>(createDTO);
-                //Villa model = new()
-                //{
-                //    Amenity = createDTO.Amenity,
-                //    Details = createDTO.Details,
-                //    ImageUrl = createDTO.ImageUrl,
-                //    Name = createDTO.Name,
-                //    Occupancy = createDTO.Occupancy,
-                //    Rate = createDTO.Rate,
-                //    Sqft = createDTO.Sqft
-                //};
                 await _dbVilla.CreateAsync(model);
                 _response.Result = _mapper.Map<VillaDTO>(model);
                 _response.StatusCode = HttpStatusCode.Created;
@@ -140,7 +120,7 @@ namespace CarribaVilla_ASP_API.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [HttpDelete("{id:int}", Name = "DeleteVilla")]
-        [Authorize(Roles = "CUSTOM")]
+        [Authorize(Roles = "admin")]
         public async Task<ActionResult<APIResponse>> DeleteVilla(int id)
         {
             try
@@ -168,7 +148,7 @@ namespace CarribaVilla_ASP_API.Controllers
             return _response;
 
         }
-
+        [Authorize(Roles = "admin")]
         [HttpPut("{id:int}", Name = "UpdateVilla")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]

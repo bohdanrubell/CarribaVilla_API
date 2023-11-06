@@ -1,9 +1,11 @@
 ﻿using AutoMapper;
 using CarribaVilla_ASP_API.Models;
+using CarribaVilla_Utility;
 using CarribaVilla_Web.Models.Dto;
 using CarribaVilla_Web.Models.ViewModel;
 using CarribaVilla_Web.Services;
 using CarribaVilla_Web.Services.IServices;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Newtonsoft.Json;
@@ -28,7 +30,7 @@ namespace CarribaVilla_Web.Controllers
         {
             List<VillaNumberDTO> list = new();
 
-            var response = await _villaNumberService.GetAllAsync<APIResponse>();
+            var response = await _villaNumberService.GetAllAsync<APIResponse>(HttpContext.Session.GetString(SD.SessionToken));
             if (response != null && response.IsSuccess)
             {
                 list = JsonConvert.DeserializeObject<List<VillaNumberDTO>>(Convert.ToString(response.Result));
@@ -37,10 +39,11 @@ namespace CarribaVilla_Web.Controllers
             return View(list);
         }
 
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> CreateVillaNumber()
         {
             VillaNumberCreateVM vm = new VillaNumberCreateVM();
-            var responseVilla = await _villaService.GetAllAsync<APIResponse>();
+            var responseVilla = await _villaService.GetAllAsync<APIResponse>(HttpContext.Session.GetString(SD.SessionToken));
             if (responseVilla != null && responseVilla.IsSuccess)
             {
                 vm.VillaList = JsonConvert.DeserializeObject<List<VillaDTO>>(Convert.ToString(responseVilla.Result))
@@ -53,13 +56,14 @@ namespace CarribaVilla_Web.Controllers
             return View(vm);
         }
 
+        [Authorize(Roles = "admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> CreateVillaNumber(VillaNumberCreateVM model)
         {
             if (ModelState.IsValid)
             {
-                var response = await _villaNumberService.CreateAsync<APIResponse>(model.VillaNumber);
+                var response = await _villaNumberService.CreateAsync<APIResponse>(model.VillaNumber, HttpContext.Session.GetString(SD.SessionToken));
                 if (response != null && response.IsSuccess)
                 {
                     return RedirectToAction(nameof(IndexVillaNumber));
@@ -73,7 +77,7 @@ namespace CarribaVilla_Web.Controllers
                 }
 
             }
-            var resp = await _villaService.GetAllAsync<APIResponse>();
+            var resp = await _villaService.GetAllAsync<APIResponse>(HttpContext.Session.GetString(SD.SessionToken));
             if (resp != null && resp.IsSuccess)
             {
                 model.VillaList = JsonConvert.DeserializeObject<List<VillaDTO>>
@@ -87,16 +91,17 @@ namespace CarribaVilla_Web.Controllers
         }
 
 
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> UpdateVillaNumber(int villaNo)
         {
             VillaNumberUpdateVM vm = new VillaNumberUpdateVM();
-            var response = await _villaNumberService.GetAsync<APIResponse>(villaNo);
+            var response = await _villaNumberService.GetAsync<APIResponse>(villaNo, HttpContext.Session.GetString(SD.SessionToken));
             if (response != null && response.IsSuccess)
             {
                 VillaNumberDTO model = JsonConvert.DeserializeObject<VillaNumberDTO>(Convert.ToString(response.Result));
                 vm.VillaNumber = _mapper.Map<VillaNumberUpdateDTO>(model);
 
-                response = await _villaService.GetAllAsync<APIResponse>();
+                response = await _villaService.GetAllAsync<APIResponse>(HttpContext.Session.GetString(SD.SessionToken));
                 if(response != null && response.IsSuccess)
                 {
                     vm.VillaList = JsonConvert.DeserializeObject<List<VillaDTO>>(Convert.ToString(response.Result))
@@ -112,13 +117,14 @@ namespace CarribaVilla_Web.Controllers
             return NotFound();
         }
 
+        [Authorize(Roles = "admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> UpdateVillaNumber(VillaNumberUpdateVM viewModel)
         {
             if (ModelState.IsValid)
             {
-                var response = await _villaNumberService.UpdateAsync<APIResponse>(viewModel.VillaNumber);
+                var response = await _villaNumberService.UpdateAsync<APIResponse>(viewModel.VillaNumber, HttpContext.Session.GetString(SD.SessionToken));
                 if (response != null && response.IsSuccess)
                 {
                     return RedirectToAction(nameof(IndexVillaNumber));
@@ -132,7 +138,7 @@ namespace CarribaVilla_Web.Controllers
                 }
 
             }
-            var resp = await _villaService.GetAllAsync<APIResponse>();
+            var resp = await _villaService.GetAllAsync<APIResponse>(HttpContext.Session.GetString(SD.SessionToken));
             if (resp != null && resp.IsSuccess)
             {
                 viewModel.VillaList = JsonConvert.DeserializeObject<List<VillaDTO>>
@@ -148,13 +154,13 @@ namespace CarribaVilla_Web.Controllers
         public async Task<IActionResult> DeleteVillaNumber(int villaNo)
         {
             VillaNumberDeleteVM vm = new VillaNumberDeleteVM();
-            var response = await _villaNumberService.GetAsync<APIResponse>(villaNo);
+            var response = await _villaNumberService.GetAsync<APIResponse>(villaNo, HttpContext.Session.GetString(SD.SessionToken));
             if (response != null && response.IsSuccess)
             {
                 VillaNumberDTO model = JsonConvert.DeserializeObject<VillaNumberDTO>(Convert.ToString(response.Result));
                 vm.VillaNumber = _mapper.Map<VillaNumberDTO>(model);
 
-                response = await _villaService.GetAllAsync<APIResponse>();
+                response = await _villaService.GetAllAsync<APIResponse>(HttpContext.Session.GetString(SD.SessionToken));
                 if (response != null && response.IsSuccess)
                 {
                     vm.VillaList = JsonConvert.DeserializeObject<List<VillaDTO>>(Convert.ToString(response.Result))
@@ -170,11 +176,12 @@ namespace CarribaVilla_Web.Controllers
             return NotFound();
         }
 
+        [Authorize(Roles = "admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteVillaNumber(VillaNumberDeleteVM model)
         {
-            var response = await _villaNumberService.DeleteAsync<APIResponse>(model.VillaNumber.VillaNo);
+            var response = await _villaNumberService.DeleteAsync<APIResponse>(model.VillaNumber.VillaNo, HttpContext.Session.GetString(SD.SessionToken));
             if (response != null && response.IsSuccess)
             {
                 return RedirectToAction(nameof(IndexVillaNumber));

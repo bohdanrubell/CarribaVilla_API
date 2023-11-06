@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using CarribaVilla_ASP_API.Models;
+using CarribaVilla_Utility;
 using CarribaVilla_Web.Models;
 using CarribaVilla_Web.Models.Dto;
 using CarribaVilla_Web.Services.IServices;
@@ -24,7 +25,7 @@ namespace CarribaVilla_Web.Controllers
         {
             List<VillaDTO> list = new();
 
-            var response = await _villaService.GetAllAsync<APIResponse>();
+            var response = await _villaService.GetAllAsync<APIResponse>(HttpContext.Session.GetString(SD.SessionToken));
             if (response != null && response.IsSuccess)
             {
                 list = JsonConvert.DeserializeObject<List<VillaDTO>>(Convert.ToString(response.Result));
