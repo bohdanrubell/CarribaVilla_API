@@ -5,23 +5,24 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace CarribaVilla_ASP_API.Controllers
 {
-    [Route("api/UsersAuth")]
+    [Route("api/v{version:apiVersion}/UsersAuth")]
     [ApiController]
+    [ApiVersionNeutral]
     public class UsersController : Controller
     {
         private readonly IUserRepository _userRepository;
         protected APIResponse _responce;
-        public UsersController(IUserRepository userRepository) 
+        public UsersController(IUserRepository userRepository)
         {
             _userRepository = userRepository;
-            this._responce = new();
+            _responce = new();
         }
 
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginRequestDTO model)
         {
             var loginResponse = await _userRepository.Login(model);
-            if(loginResponse.User == null || string.IsNullOrEmpty(loginResponse.Token))
+            if (loginResponse.User == null || string.IsNullOrEmpty(loginResponse.Token))
             {
                 _responce.StatusCode = System.Net.HttpStatusCode.BadRequest;
                 _responce.IsSuccess = false;
@@ -47,14 +48,14 @@ namespace CarribaVilla_ASP_API.Controllers
             }
 
             var user = await _userRepository.Register(model);
-            if(user == null)
+            if (user == null)
             {
                 _responce.StatusCode = System.Net.HttpStatusCode.BadRequest;
                 _responce.IsSuccess = false;
                 _responce.ErrorMessages.Add("Error while registering!");
                 return BadRequest(_responce);
             }
-            _responce.StatusCode=System.Net.HttpStatusCode.OK;
+            _responce.StatusCode = System.Net.HttpStatusCode.OK;
             _responce.IsSuccess = true;
             return Ok(_responce);
         }

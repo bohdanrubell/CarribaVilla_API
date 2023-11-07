@@ -27,9 +27,15 @@ builder.Services.AddApiVersioning(options =>
 {
     options.AssumeDefaultVersionWhenUnspecified = true;
     options.DefaultApiVersion = new ApiVersion(1, 0);
+    options.ReportApiVersions = true;
 });
-var key = builder.Configuration.GetValue<string>("ApiSettings:Secret");
+builder.Services.AddVersionedApiExplorer(options =>
+{
+    options.GroupNameFormat = "'v'VVV";
+    options.SubstituteApiVersionInUrl = true;
+});
 
+var key = builder.Configuration.GetValue<string>("ApiSettings:Secret");
 builder.Services.AddAuthentication(x =>
 {
     x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -78,6 +84,19 @@ builder.Services.AddSwaggerGen(options =>
                 new List<string>()
         }
     });
+    options.SwaggerDoc("v1", new OpenApiInfo{
+        Version = "v1.0",
+        Title = "Carriba Villa",
+        Description = "API to manage Villa",
+        TermsOfService = new Uri("https://example.com/terms")
+    });
+    options.SwaggerDoc("v2", new OpenApiInfo
+    {
+        Version = "v2.0",
+        Title = "Carriba Villa",
+        Description = "API to manage Villa",
+        TermsOfService = new Uri("https://example.com/terms")
+    });
 });
 var app = builder.Build();
 
@@ -85,7 +104,11 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwaggerUI(options =>
+    {
+        options.SwaggerEndpoint("/swagger/v1/swagger.json","CarribaVilla_V1");
+        options.SwaggerEndpoint("/swagger/v2/swagger.json", "CarribaVilla_V2");
+    });
 }
 
 app.UseHttpsRedirection();
