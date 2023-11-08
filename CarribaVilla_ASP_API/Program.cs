@@ -115,9 +115,8 @@ var app = builder.Build();
 app.UseSwagger();
 app.UseSwaggerUI(options =>
 {
-    options.SwaggerEndpoint("/swagger/v1/swagger.json", "CarribaVilla_V1");
     options.SwaggerEndpoint("/swagger/v2/swagger.json", "CarribaVilla_V2");
-    options.RoutePrefix = String.Empty;
+    options.SwaggerEndpoint("/swagger/v1/swagger.json", "CarribaVilla_V1");
 });
 
 app.UseHttpsRedirection();
