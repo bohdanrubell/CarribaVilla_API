@@ -22,7 +22,7 @@ namespace CarribaVilla_Web.Services
             {
                 ApiType = SD.ApiType.POST,
                 Data = obj,
-                Url = villaUrl + "api/v1/UsersAuth/login"
+                Url = villaUrl + "/api/v1/UsersAuth/login"
             });
         }
 
@@ -32,7 +32,7 @@ namespace CarribaVilla_Web.Services
             {
                 ApiType = SD.ApiType.POST,
                 Data = obj,
-                Url = villaUrl + "api/v1/UsersAuth/register"
+                Url = villaUrl + "/api/v1/UsersAuth/register"
             });
         }
     }

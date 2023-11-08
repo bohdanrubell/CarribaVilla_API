@@ -4,6 +4,7 @@ using CarribaVilla_ASP_API.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CarribaVilla_ASP_API.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231108145739_end")]
+    partial class end
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -154,73 +157,6 @@ namespace CarribaVilla_ASP_API.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Villas");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Amenity = "",
-                            CreatedDate = new DateTime(2023, 11, 8, 17, 18, 46, 535, DateTimeKind.Local).AddTicks(3109),
-                            Details = "Fusce 11 tincidunt maximus leo, sed scelerisque massa auctor sit amet. Donec ex mauris, hendrerit quis nibh ac, efficitur fringilla enim.",
-                            ImageUrl = "https://dotnetmastery.com/bluevillaimages/villa3.jpg",
-                            Name = "Royal Villa",
-                            Occupancy = 4,
-                            Rate = 200.0,
-                            Sqft = 550,
-                            UpdatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Amenity = "",
-                            CreatedDate = new DateTime(2023, 11, 8, 17, 18, 46, 535, DateTimeKind.Local).AddTicks(3164),
-                            Details = "Fusce 11 tincidunt maximus leo, sed scelerisque massa auctor sit amet. Donec ex mauris, hendrerit quis nibh ac, efficitur fringilla enim.",
-                            ImageUrl = "https://dotnetmastery.com/bluevillaimages/villa1.jpg",
-                            Name = "Premium Pool Villa",
-                            Occupancy = 4,
-                            Rate = 300.0,
-                            Sqft = 550,
-                            UpdatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Amenity = "",
-                            CreatedDate = new DateTime(2023, 11, 8, 17, 18, 46, 535, DateTimeKind.Local).AddTicks(3167),
-                            Details = "Fusce 11 tincidunt maximus leo, sed scelerisque massa auctor sit amet. Donec ex mauris, hendrerit quis nibh ac, efficitur fringilla enim.",
-                            ImageUrl = "https://dotnetmastery.com/bluevillaimages/villa4.jpg",
-                            Name = "Luxury Pool Villa",
-                            Occupancy = 4,
-                            Rate = 400.0,
-                            Sqft = 750,
-                            UpdatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
-                        },
-                        new
-                        {
-                            Id = 4,
-                            Amenity = "",
-                            CreatedDate = new DateTime(2023, 11, 8, 17, 18, 46, 535, DateTimeKind.Local).AddTicks(3169),
-                            Details = "Fusce 11 tincidunt maximus leo, sed scelerisque massa auctor sit amet. Donec ex mauris, hendrerit quis nibh ac, efficitur fringilla enim.",
-                            ImageUrl = "https://dotnetmastery.com/bluevillaimages/villa5.jpg",
-                            Name = "Diamond Villa",
-                            Occupancy = 4,
-                            Rate = 550.0,
-                            Sqft = 900,
-                            UpdatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
-                        },
-                        new
-                        {
-                            Id = 5,
-                            Amenity = "",
-                            CreatedDate = new DateTime(2023, 11, 8, 17, 18, 46, 535, DateTimeKind.Local).AddTicks(3171),
-                            Details = "Fusce 11 tincidunt maximus leo, sed scelerisque massa auctor sit amet. Donec ex mauris, hendrerit quis nibh ac, efficitur fringilla enim.",
-                            ImageUrl = "https://dotnetmastery.com/bluevillaimages/villa2.jpg",
-                            Name = "Diamond Pool Villa",
-                            Occupancy = 4,
-                            Rate = 600.0,
-                            Sqft = 1100,
-                            UpdatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
-                        });
                 });
 
             modelBuilder.Entity("CarribaVilla_ASP_API.Models.VillaNumber", b =>

@@ -22,7 +22,7 @@ namespace CarribaVilla_Web.Services
             {
                 ApiType = SD.ApiType.POST,
                 Data = dto,
-                Url = villaUrl + "api/v1/VillaNumberAPI",
+                Url = villaUrl + "/api/v1/VillaNumberAPI",
                 Token = token
             });
         }
@@ -32,7 +32,7 @@ namespace CarribaVilla_Web.Services
             return SendAsync<T>(new APIRequest()
             {
                 ApiType = SD.ApiType.DELETE,
-                Url = villaUrl + "api/v1/VillaNumberAPI/" + id,
+                Url = villaUrl + "/api/v1/VillaNumberAPI/" + id,
                 Token = token
             });
         }
@@ -42,7 +42,7 @@ namespace CarribaVilla_Web.Services
             return SendAsync<T>(new APIRequest()
             {
                 ApiType = SD.ApiType.GET,
-                Url = villaUrl + "api/v1/VillaNumberAPI",
+                Url = villaUrl + "/api/v1/VillaNumberAPI",
                 Token = token
             });
         }
@@ -52,7 +52,7 @@ namespace CarribaVilla_Web.Services
             return SendAsync<T>(new APIRequest()
             {
                 ApiType = SD.ApiType.GET,
-                Url = villaUrl + "api/v1/VillaNumberAPI/" + id,
+                Url = villaUrl + "/api/v1/VillaNumberAPI/" + id,
                 Token = token
             });
         }
@@ -63,7 +63,7 @@ namespace CarribaVilla_Web.Services
             {
                 ApiType = SD.ApiType.PUT,
                 Data = dto,
-                Url = villaUrl + "api/v1/VillaNumberAPI/" + dto.VillaNo,
+                Url = villaUrl + "/api/v1/VillaNumberAPI/" + dto.VillaNo,
                 Token = token
             });
         }

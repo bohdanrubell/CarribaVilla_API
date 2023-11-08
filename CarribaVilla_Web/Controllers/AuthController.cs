@@ -44,6 +44,7 @@ namespace CarribaVilla_Web.Controllers
                 identity.AddClaim(new Claim(ClaimTypes.Role, jwt.Claims.FirstOrDefault(u =>u.Type == "role").Value));
                 var principal = new ClaimsPrincipal(identity);
                 await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme,principal);
+
                 HttpContext.Session.SetString(SD.SessionToken, model.Token);
                 return RedirectToAction("Index","Home");
             }
