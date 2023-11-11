@@ -22,7 +22,7 @@ namespace CarribaVilla_ASP_API.Controllers
         public async Task<IActionResult> Login([FromBody] LoginRequestDTO model)
         {
             var tokenDTO = await _userRepository.Login(model);
-            if (tokenDTO == null || string.IsNullOrEmpty(tokenDTO.Token))
+            if (tokenDTO == null || string.IsNullOrEmpty(tokenDTO.AccessToken))
             {
                 _responce.StatusCode = System.Net.HttpStatusCode.BadRequest;
                 _responce.IsSuccess = false;

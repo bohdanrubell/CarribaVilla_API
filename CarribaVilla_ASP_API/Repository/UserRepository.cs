@@ -48,29 +48,15 @@ namespace CarribaVilla_ASP_API.Repository
             {
                 return new TokenDTO()
                 {
-                    Token = "",
+                    AccessToken = "",
                 };
             }
-            // if user was found => generate JWT Token
-            var roles = await _userManager.GetRolesAsync(user);
-            var tokenHandler = new JwtSecurityTokenHandler();
-            var key = Encoding.ASCII.GetBytes(secretKey);
 
-            var tokenDescriptor = new SecurityTokenDescriptor()
-            {
-                Subject = new ClaimsIdentity(new Claim[]
-                {
-                    new Claim(ClaimTypes.Name, user.Id.ToString()),
-                    new Claim(ClaimTypes.Role, roles.FirstOrDefault())
-                }),
-                Expires = DateTime.UtcNow.AddDays(7),
-                SigningCredentials = new(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
-            };
-
-            var token = tokenHandler.CreateToken(tokenDescriptor);
+            var accessToken = await GetAccessToken(user);
+            
             TokenDTO loginResponseDTO = new TokenDTO()
             {
-                Token = tokenHandler.WriteToken(token),
+                AccessToken = accessToken,
             };
             return loginResponseDTO;
         }
@@ -107,6 +93,30 @@ namespace CarribaVilla_ASP_API.Repository
             }
 
             return new UserDTO();
+        }
+
+
+        private async Task<string> GetAccessToken(ApplicationUser user)
+        {
+            // if user was found => generate JWT Token
+            var roles = await _userManager.GetRolesAsync(user);
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var key = Encoding.ASCII.GetBytes(secretKey);
+
+            var tokenDescriptor = new SecurityTokenDescriptor()
+            {
+                Subject = new ClaimsIdentity(new Claim[]
+                {
+                    new Claim(ClaimTypes.Name, user.Id.ToString()),
+                    new Claim(ClaimTypes.Role, roles.FirstOrDefault())
+                }),
+                Expires = DateTime.UtcNow.AddDays(7),
+                SigningCredentials = new(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+            };
+
+            var token = tokenHandler.CreateToken(tokenDescriptor);
+            var tokenStr = tokenHandler.WriteToken(token);
+            return tokenStr;
         }
     }
 }

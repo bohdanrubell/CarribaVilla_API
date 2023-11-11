@@ -8,10 +8,10 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 builder.Services.AddAutoMapper(typeof(MappingConfig));
-
 builder.Services.AddHttpClient<IVillaService, VillaService>();
+builder.Services.AddScoped<IBaseService, BaseService>();
 builder.Services.AddScoped<IVillaService, VillaService>();
-
+builder.Services.AddScoped<ITokenProvider, TokenProvider>();
 builder.Services.AddHttpClient<IVillaNumberService, VillaNumberService>();
 builder.Services.AddScoped<IVillaNumberService, VillaNumberService>();
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>(); 
