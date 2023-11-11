@@ -59,5 +59,33 @@ namespace CarribaVilla_ASP_API.Controllers
             _responce.IsSuccess = true;
             return Ok(_responce);
         }
+
+        [HttpPost("refresh")]
+        public async Task<IActionResult> GetNewTokenFromRefreshToken([FromBody] TokenDTO tokenDTO)
+        {
+            if(ModelState.IsValid) 
+            {
+                var tokenDTOResponse = await _userRepository.RefreshAccessToken(tokenDTO);
+                if (tokenDTOResponse == null || string.IsNullOrEmpty(tokenDTOResponse.AccessToken))
+                {
+                    _responce.StatusCode = System.Net.HttpStatusCode.BadRequest;
+                    _responce.IsSuccess = false;
+                    _responce.ErrorMessages.Add("Token Invalid");
+                    return BadRequest(_responce);
+                }
+                _responce.StatusCode = System.Net.HttpStatusCode.OK;
+                _responce.IsSuccess = true;
+                _responce.Result = tokenDTO;
+                return Ok(_responce);
+            }
+            else
+            {
+                _responce.IsSuccess = false;
+                _responce.Result = "Invalid input";
+                return BadRequest(_responce);
+            }
+            
+           
+        }
     }
 }

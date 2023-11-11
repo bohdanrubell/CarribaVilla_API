@@ -8,5 +8,6 @@ namespace CarribaVilla_ASP_API.Repository.IRepository
         bool IsUniqueUser(string username);
         Task<TokenDTO> Login(LoginRequestDTO loginRequestDTO);
         Task<UserDTO> Register(RegistrationRequestDTO registrationRequestDTO);
+        Task<TokenDTO> RefreshAccessToken(TokenDTO tokenDTO);
     }
 }
