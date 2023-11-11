@@ -6,6 +6,7 @@ using Newtonsoft.Json;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json.Serialization;
+using static CarribaVilla_Utility.SD;
 
 namespace CarribaVilla_Web.Services
 {
@@ -24,12 +25,45 @@ namespace CarribaVilla_Web.Services
             {
                 var client = httpClient.CreateClient("CarribaAPI");
                 HttpRequestMessage message = new HttpRequestMessage();
-                message.Headers.Add("Accept", "application/json");
-                message.RequestUri = new Uri(apiRequest.Url);
-                if (apiRequest.Data != null)
+                if (apiRequest.ContentType == ContentType.MultipartFromData)
                 {
-                    message.Content = new StringContent(JsonConvert.SerializeObject(apiRequest.Data),
-                        Encoding.UTF8, "application/json");
+                    message.Headers.Add("Accept", "*/*");
+                }
+                else
+                {
+                    message.Headers.Add("Accept", "application/json");
+                }
+                message.RequestUri = new Uri(apiRequest.Url);
+
+                if (apiRequest.ContentType == ContentType.MultipartFromData)
+                {
+                    var content = new MultipartFormDataContent();
+
+                    foreach (var prop in apiRequest.Data.GetType().GetProperties())
+                    {
+                        var value = prop.GetValue(apiRequest.Data);
+                        if (value is FormFile)
+                        {
+                            var file = (FormFile)value;
+                            if (file != null)
+                            {
+                                content.Add(new StreamContent(file.OpenReadStream()), prop.Name, file.FileName);
+                            }
+                        }
+                        else
+                        {
+                            content.Add(new StringContent(value == null ? "" : value.ToString()), prop.Name);
+                        }
+                    }
+                    message.Content = content;
+                }
+                else
+                {
+                    if (apiRequest.Data != null)
+                    {
+                        message.Content = new StringContent(JsonConvert.SerializeObject(apiRequest.Data),
+                            Encoding.UTF8, "application/json");
+                    }
                 }
                 switch (apiRequest.ApiType)
                 {
@@ -60,7 +94,7 @@ namespace CarribaVilla_Web.Services
                 try
                 {
                     APIResponse ApiResponse = JsonConvert.DeserializeObject<APIResponse>(apiContent);
-                    if (ApiResponse!=null && (apiResponse.StatusCode == System.Net.HttpStatusCode.BadRequest
+                    if (ApiResponse != null && (apiResponse.StatusCode == System.Net.HttpStatusCode.BadRequest
                         || apiResponse.StatusCode == System.Net.HttpStatusCode.NotFound))
                     {
                         ApiResponse.StatusCode = System.Net.HttpStatusCode.BadRequest;

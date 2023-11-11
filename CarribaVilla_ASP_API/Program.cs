@@ -59,11 +59,11 @@ builder.Services.AddAuthentication(x =>
 
 builder.Services.AddControllers(option =>
 {
-    option.CacheProfiles.Add("Default30", 
-        new CacheProfile()
-        {
-            Duration = 30
-        });
+    //option.CacheProfiles.Add("Default30", 
+    //    new CacheProfile()
+    //    {
+    //        Duration = 30
+    //    });
 }).AddNewtonsoftJson();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -118,7 +118,7 @@ app.UseSwaggerUI(options =>
     options.SwaggerEndpoint("/swagger/v2/swagger.json", "CarribaVilla_V2");
     options.SwaggerEndpoint("/swagger/v1/swagger.json", "CarribaVilla_V1");
 });
-
+app.UseStaticFiles(); 
 app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();

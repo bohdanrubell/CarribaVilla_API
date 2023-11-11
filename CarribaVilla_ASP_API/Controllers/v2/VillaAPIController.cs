@@ -31,7 +31,6 @@ namespace CarribaVilla_ASP_API.Controllers.v2
 
 
         [HttpGet]
-        [ResponseCache(CacheProfileName = "Default30")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<APIResponse>> GetVillas([FromQuery(Name = "filterOccupancy")] int? ocupancy,
             [FromQuery] string? search, int pageSize = 0, int pageNumber = 1)
@@ -108,7 +107,7 @@ namespace CarribaVilla_ASP_API.Controllers.v2
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<APIResponse>> CreateVilla([FromBody] VillaCreateDTO createDTO)
+        public async Task<ActionResult<APIResponse>> CreateVilla([FromForm] VillaCreateDTO createDTO)
         {
             try
             {
@@ -117,12 +116,42 @@ namespace CarribaVilla_ASP_API.Controllers.v2
                     ModelState.AddModelError("ErrorMessages", "Villa already Exists!");
                     return BadRequest(ModelState);
                 }
+
                 if (createDTO == null)
                 {
                     return BadRequest(createDTO);
                 }
                 Villa model = _mapper.Map<Villa>(createDTO);
                 await _dbVilla.CreateAsync(model);
+
+                if(createDTO.Image != null) 
+                {
+                    string fileName = model.Id + Path.GetExtension(createDTO.Image.FileName);
+                    string filePath = @"wwwroot\ProductImage\" + fileName;
+
+                    var directoryLocation = Path.Combine(Directory.GetCurrentDirectory(), filePath);
+
+                    FileInfo file = new FileInfo(directoryLocation);
+
+                    if (file.Exists)
+                    {
+                        file.Delete();
+                    }
+
+                    using(var fileStream = new FileStream(directoryLocation, FileMode.Create))
+                    {
+                        createDTO.Image.CopyTo(fileStream);
+                    }
+
+                    var baseUrl = $"{HttpContext.Request.Scheme}://{HttpContext.Request.Host.Value}{HttpContext.Request.PathBase.Value}";
+                    model.ImageUrl = baseUrl+ "\\ProductImage\\" + fileName;
+                    model.ImageLocalPath = filePath;
+                }
+                else
+                {
+                    model.ImageUrl = "https://placehold.co/600x400";
+                }
+                await _dbVilla.UpdateAsync(model);
                 _response.Result = _mapper.Map<VillaDTO>(model);
                 _response.StatusCode = HttpStatusCode.Created;
                 return CreatedAtRoute("GetVilla", new { id = model.Id }, _response);
@@ -156,7 +185,18 @@ namespace CarribaVilla_ASP_API.Controllers.v2
                 {
                     return NotFound();
                 }
-                _dbVilla.RemoveAsync(villa);
+                if (!string.IsNullOrEmpty(villa.ImageLocalPath))
+                {
+                    var oldFilePathDirectory = Path.Combine(Directory.GetCurrentDirectory(), villa.ImageLocalPath);
+
+                    FileInfo file = new FileInfo(oldFilePathDirectory);
+
+                    if (file.Exists)
+                    {
+                        file.Delete();
+                    }
+                }
+                await _dbVilla.RemoveAsync(villa);
                 _response.StatusCode = HttpStatusCode.NoContent;
                 _response.IsSuccess = true;
                 return Ok(_response);
@@ -174,7 +214,7 @@ namespace CarribaVilla_ASP_API.Controllers.v2
         [HttpPut("{id:int}", Name = "UpdateVilla")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<APIResponse>> UpdateVilla(int id, [FromBody] VillaUpdateDTO updateDTO)
+        public async Task<ActionResult<APIResponse>> UpdateVilla(int id, [FromForm] VillaUpdateDTO updateDTO)
         {
             try
             {
@@ -184,6 +224,38 @@ namespace CarribaVilla_ASP_API.Controllers.v2
                 }
 
                 Villa model = _mapper.Map<Villa>(updateDTO);
+
+                if (updateDTO.Image != null)
+                {
+
+                    if(!string.IsNullOrEmpty(model.ImageLocalPath))
+                    {
+                        var oldFilePathDirectory = Path.Combine(Directory.GetCurrentDirectory(), model.ImageLocalPath);
+
+                        FileInfo file = new FileInfo(oldFilePathDirectory);
+
+                        if (file.Exists)
+                        {
+                            file.Delete();
+                        }
+                    }
+                    string fileName = updateDTO.Id + Path.GetExtension(updateDTO.Image.FileName);
+                    string filePath = @"wwwroot\ProductImage\" + fileName;
+
+                    var directoryLocation = Path.Combine(Directory.GetCurrentDirectory(), filePath);
+                    using (var fileStream = new FileStream(directoryLocation, FileMode.Create))
+                    {
+                        updateDTO.Image.CopyTo(fileStream);
+                    }
+
+                    var baseUrl = $"{HttpContext.Request.Scheme}://{HttpContext.Request.Host.Value}{HttpContext.Request.PathBase.Value}";
+                    model.ImageUrl = baseUrl + "\\ProductImage\\" + fileName;
+                    model.ImageLocalPath = filePath;
+                }
+                else
+                {
+                    model.ImageUrl = "https://placehold.co/600x400";
+                }
                 await _dbVilla.UpdateAsync(model);
                 _response.StatusCode = HttpStatusCode.NoContent;
                 _response.IsSuccess = true;

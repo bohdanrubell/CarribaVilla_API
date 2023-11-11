@@ -31,7 +31,6 @@ namespace CarribaVilla_ASP_API.Controllers.v1
 
 
         [HttpGet]
-        [ResponseCache(CacheProfileName = "Default30")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<APIResponse>> GetVillas([FromQuery(Name = "filterOccupancy")] int? ocupancy,
             [FromQuery] string? search, int pageSize = 0, int pageNumber = 1)
