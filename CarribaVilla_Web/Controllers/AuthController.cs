@@ -34,8 +34,8 @@ namespace CarribaVilla_Web.Controllers
             APIResponse response = await _authService.LoginAsync<APIResponse>(obj);
             if (response != null && response.IsSuccess)
             {
-                LoginResponseDTO model = JsonConvert.
-                    DeserializeObject<LoginResponseDTO>(Convert.ToString(response.Result));
+                TokenDTO model = JsonConvert.
+                    DeserializeObject<TokenDTO>(Convert.ToString(response.Result));
 
                 var handler = new JwtSecurityTokenHandler();
                 var jwt = handler.ReadJwtToken(model.Token);
@@ -46,7 +46,7 @@ namespace CarribaVilla_Web.Controllers
                 var principal = new ClaimsPrincipal(identity);
                 await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme,principal);
 
-                HttpContext.Session.SetString(SD.SessionToken, model.Token);
+                HttpContext.Session.SetString(SD.AccessToken, model.Token);
                 return RedirectToAction("Index","Home");
             }
             else
@@ -94,7 +94,7 @@ namespace CarribaVilla_Web.Controllers
         public async Task<IActionResult> Logout()
         {
             await HttpContext.SignOutAsync();
-            HttpContext.Session.SetString(SD.SessionToken, "");
+            HttpContext.Session.SetString(SD.AccessToken, "");
             return RedirectToAction("Index","Home");
         }
 

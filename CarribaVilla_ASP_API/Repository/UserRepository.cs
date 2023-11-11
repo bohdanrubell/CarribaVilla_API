@@ -38,7 +38,7 @@ namespace CarribaVilla_ASP_API.Repository
             return false;
         }
 
-        public async Task<LoginResponseDTO> Login(LoginRequestDTO loginRequestDTO)
+        public async Task<TokenDTO> Login(LoginRequestDTO loginRequestDTO)
         {
             var user = _db.ApplicationUsers
                 .FirstOrDefault(u => u.UserName.ToLower() == loginRequestDTO.UserName.ToLower());
@@ -46,10 +46,9 @@ namespace CarribaVilla_ASP_API.Repository
             bool isValid = await _userManager.CheckPasswordAsync(user, loginRequestDTO.Password);
             if (user == null || isValid == false)
             {
-                return new LoginResponseDTO()
+                return new TokenDTO()
                 {
                     Token = "",
-                    User = null
                 };
             }
             // if user was found => generate JWT Token
@@ -69,11 +68,9 @@ namespace CarribaVilla_ASP_API.Repository
             };
 
             var token = tokenHandler.CreateToken(tokenDescriptor);
-            LoginResponseDTO loginResponseDTO = new LoginResponseDTO()
+            TokenDTO loginResponseDTO = new TokenDTO()
             {
                 Token = tokenHandler.WriteToken(token),
-                User = _mapper.Map<UserDTO>(user),
-
             };
             return loginResponseDTO;
         }

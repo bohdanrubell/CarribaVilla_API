@@ -21,8 +21,8 @@ namespace CarribaVilla_ASP_API.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginRequestDTO model)
         {
-            var loginResponse = await _userRepository.Login(model);
-            if (loginResponse.User == null || string.IsNullOrEmpty(loginResponse.Token))
+            var tokenDTO = await _userRepository.Login(model);
+            if (tokenDTO == null || string.IsNullOrEmpty(tokenDTO.Token))
             {
                 _responce.StatusCode = System.Net.HttpStatusCode.BadRequest;
                 _responce.IsSuccess = false;
@@ -31,7 +31,7 @@ namespace CarribaVilla_ASP_API.Controllers
             }
             _responce.StatusCode = System.Net.HttpStatusCode.OK;
             _responce.IsSuccess = true;
-            _responce.Result = loginResponse;
+            _responce.Result = tokenDTO;
             return Ok(_responce);
         }
 
