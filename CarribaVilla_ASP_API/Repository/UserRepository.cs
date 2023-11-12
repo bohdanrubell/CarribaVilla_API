@@ -4,6 +4,7 @@ using CarribaVilla_ASP_API.Models;
 using CarribaVilla_ASP_API.Models.Dto;
 using CarribaVilla_ASP_API.Repository.IRepository;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -113,7 +114,7 @@ namespace CarribaVilla_ASP_API.Repository
                     new Claim(JwtRegisteredClaimNames.Jti,jwtTokenId),
                     new Claim(JwtRegisteredClaimNames.Sub,user.Id)
                 }),
-                Expires = DateTime.UtcNow.AddMinutes(60),
+                Expires = DateTime.UtcNow.AddMinutes(1),
                 SigningCredentials = new(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
             };
 
@@ -122,9 +123,60 @@ namespace CarribaVilla_ASP_API.Repository
             return tokenStr;
         }
 
-        public Task<TokenDTO> RefreshAccessToken(TokenDTO tokenDTO)
+        public async Task<TokenDTO> RefreshAccessToken(TokenDTO tokenDTO)
         {
-            throw new NotImplementedException();
+            //Find an existing refresh token
+            var existingRefreshToken = await _db.RefreshTokens.FirstOrDefaultAsync(u => u.Refresh_Token == tokenDTO.RefreshToken);
+            if(existingRefreshToken == null) 
+            {
+                return new TokenDTO();
+            }
+
+            //Compare data from existing refresh and access token 
+            var accessTokenData = GetAccessTokenData(tokenDTO.AccessToken);
+            if (!accessTokenData.isSuccessful || accessTokenData.userId != existingRefreshToken.UserId
+                || accessTokenData.tokenId != existingRefreshToken.JwtTokenId)
+            {
+                existingRefreshToken.IsValid = false;
+                _db.SaveChanges();
+                return new TokenDTO();
+            }
+
+            //when someone tries to use not valid refresh token
+            if (!existingRefreshToken.IsValid)
+            {
+                var chainRecords = _db.RefreshTokens.Where(u => u.UserId == existingRefreshToken.UserId
+                && u.JwtTokenId == existingRefreshToken.JwtTokenId)
+                    .ExecuteUpdate(u => u.SetProperty(refreshToken => refreshToken.IsValid,false));
+
+                return new TokenDTO();
+            }
+            //Expiry
+            if(existingRefreshToken.ExpiresAt < DateTime.Now)
+            {
+                existingRefreshToken.IsValid = false;
+                _db.SaveChanges();
+                return new TokenDTO();
+            }
+
+            //create new refresh token
+            var newRefreshToken = await CreateNewRefreshToken(existingRefreshToken.UserId, existingRefreshToken.JwtTokenId);
+
+            //revoke existing refresh token
+            existingRefreshToken.IsValid = false;
+            _db.SaveChanges();
+            //new access token
+            var applicationUser = _db.ApplicationUsers.FirstOrDefault(u => u.Id == existingRefreshToken.UserId);
+            if (applicationUser == null)
+                return new TokenDTO();
+
+            var newAccessToken = await GetAccessToken(applicationUser, existingRefreshToken.JwtTokenId);
+
+            return new TokenDTO()
+            {
+                AccessToken = newAccessToken,
+                RefreshToken = newRefreshToken,
+            };
         }
 
         private async Task<string> CreateNewRefreshToken(string userId, string tokenId)
@@ -134,7 +186,7 @@ namespace CarribaVilla_ASP_API.Repository
                 IsValid = true,
                 UserId = userId,
                 JwtTokenId = tokenId,
-                ExpiresAt = DateTime.UtcNow.AddDays(30),
+                ExpiresAt = DateTime.Now.AddMinutes(3),
                 Refresh_Token = Guid.NewGuid() + "-" + Guid.NewGuid()
             };
             await _db.RefreshTokens.AddAsync(refreshToken);
