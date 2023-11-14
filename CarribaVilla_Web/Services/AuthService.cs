@@ -36,5 +36,15 @@ namespace CarribaVilla_Web.Services
                 Url = villaUrl + $"/api/{SD.CurrentAPIVersion}/UsersAuth/register"
             }, withBearer: false);
         }
+
+        public async Task<T> LogoutAsync<T>(TokenDTO obj)
+        {
+            return await _baseService.SendAsync<T>(new APIRequest()
+            {
+                ApiType = SD.ApiType.POST,
+                Data = obj,
+                Url = villaUrl + $"/api/{SD.CurrentAPIVersion}/UsersAuth/revoke"
+            });
+        }
     }
 }

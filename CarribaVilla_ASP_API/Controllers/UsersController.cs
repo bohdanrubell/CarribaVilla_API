@@ -87,5 +87,20 @@ namespace CarribaVilla_ASP_API.Controllers
             
            
         }
+
+        [HttpPost("revoke")]
+        public async Task<IActionResult> RevokeRefreshToken([FromBody] TokenDTO tokenDTO)
+        {
+            if (ModelState.IsValid)
+            {
+                await _userRepository.RevokeRefreshToken(tokenDTO);
+                _responce.IsSuccess = true;
+                _responce.StatusCode=System.Net.HttpStatusCode.OK;
+                return Ok(_responce);
+            }
+            _responce.IsSuccess = false;
+            _responce.Result = "Invalid input";
+            return Ok(_responce);
+        }
     }
 }
