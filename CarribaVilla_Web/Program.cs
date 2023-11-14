@@ -1,4 +1,5 @@
 using CarribaVilla_Web;
+using CarribaVilla_Web.Extensions;
 using CarribaVilla_Web.Services;
 using CarribaVilla_Web.Services.IServices;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -6,9 +7,10 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddControllersWithViews();
+builder.Services.AddControllersWithViews(u => u.Filters.Add(new AuthExceptionRedirection()));
 builder.Services.AddAutoMapper(typeof(MappingConfig));
 builder.Services.AddHttpClient<IVillaService, VillaService>();
+builder.Services.AddSingleton<IApiMessageRequestBuilder, ApiMessageRequestBuilder>();
 builder.Services.AddScoped<IBaseService, BaseService>();
 builder.Services.AddScoped<IVillaService, VillaService>();
 builder.Services.AddScoped<ITokenProvider, TokenProvider>();

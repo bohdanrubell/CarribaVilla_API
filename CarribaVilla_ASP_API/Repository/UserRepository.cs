@@ -186,7 +186,7 @@ namespace CarribaVilla_ASP_API.Repository
                 IsValid = true,
                 UserId = userId,
                 JwtTokenId = tokenId,
-                ExpiresAt = DateTime.Now.AddMinutes(3),
+                ExpiresAt = DateTime.Now.AddMinutes(2),
                 Refresh_Token = Guid.NewGuid() + "-" + Guid.NewGuid()
             };
             await _db.RefreshTokens.AddAsync(refreshToken);

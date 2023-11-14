@@ -70,10 +70,8 @@ namespace CarribaVilla_Web.Controllers
                 }
                 else
                 {
-                    if(response.ErrorMessages.Count > 0)
-                    {
-                        ModelState.AddModelError("ErrorMessages", response.ErrorMessages.FirstOrDefault());
-                    }
+                    TempData["error"] = (response.ErrorMessages != null && response.ErrorMessages.Count > 0) ?
+                        response.ErrorMessages[0] : "Error encounted";
                 }
 
             }
@@ -113,7 +111,11 @@ namespace CarribaVilla_Web.Controllers
                 }
                 return View(vm);
             }
-
+            else
+            {
+                TempData["error"] = (response.ErrorMessages != null && response.ErrorMessages.Count > 0) ?
+                    response.ErrorMessages[0] : "Error encounted";
+            }
             return NotFound();
         }
 
@@ -131,10 +133,8 @@ namespace CarribaVilla_Web.Controllers
                 }
                 else
                 {
-                    if (response.ErrorMessages.Count > 0)
-                    {
-                        ModelState.AddModelError("ErrorMessages", response.ErrorMessages.FirstOrDefault());
-                    }
+                    TempData["error"] = (response.ErrorMessages != null && response.ErrorMessages.Count > 0) ?
+                        response.ErrorMessages[0] : "Error encounted";
                 }
 
             }
@@ -185,6 +185,11 @@ namespace CarribaVilla_Web.Controllers
             if (response != null && response.IsSuccess)
             {
                 return RedirectToAction(nameof(IndexVillaNumber));
+            }
+            else
+            {
+                TempData["error"] = (response.ErrorMessages != null && response.ErrorMessages.Count > 0) ?
+                    response.ErrorMessages[0] : "Error encounted";
             }
             return View(model);
         }
