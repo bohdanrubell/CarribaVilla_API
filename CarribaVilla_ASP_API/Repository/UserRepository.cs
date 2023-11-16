@@ -112,9 +112,12 @@ namespace CarribaVilla_ASP_API.Repository
                     new Claim(ClaimTypes.Name, user.Id.ToString()),
                     new Claim(ClaimTypes.Role, roles.FirstOrDefault()),
                     new Claim(JwtRegisteredClaimNames.Jti,jwtTokenId),
-                    new Claim(JwtRegisteredClaimNames.Sub,user.Id)
+                    new Claim(JwtRegisteredClaimNames.Sub,user.Id),
+                    new Claim(JwtRegisteredClaimNames.Aud, "bananssites.com")
                 }),
                 Expires = DateTime.UtcNow.AddMinutes(1),
+                Issuer = "https://carriba-villa.com",
+                Audience = "https://test-carriba-villa-api",
                 SigningCredentials = new(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
             };
 
